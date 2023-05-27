@@ -7,7 +7,6 @@ export const Context = createContext(null);
 function App() {
   const [data, setData] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [keywords, setKeywords] = useState([]);
   const [allSorted, setAllSorted] = useState(false);
 
   const firstRenderRef = useRef(true);
@@ -26,7 +25,6 @@ function App() {
 
   const handleSearch = () => {
     const tags = inputValue.trim().split(" ").filter(tag => tag.trim().length > 0);
-    setKeywords(tags);
     const dataAcc = [];
     Promise.all(
       tags.map((tag) => {
@@ -86,18 +84,18 @@ function App() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
-            <button disabled={inputValue.length === 0} onClick={handleSearch}>
+            <button disabled={inputValue.trim().length === 0} onClick={handleSearch}>
               Search
             </button>
           </div>
         </header>
-        {allSorted && (
+        { allSorted ? (
           <div className="message_container">
             <div className="all_sorted">All photos are sorted!</div>
           </div>
-        )}
+        ) : <></>}
         {data.length ? <div className="photos">{photos}</div> : <></>}
-        <Baskets removeSortedItem={removeSortedItem} keywords={keywords} />
+        <Baskets removeSortedItem={removeSortedItem} />
       </Context.Provider>
     </div>
   );

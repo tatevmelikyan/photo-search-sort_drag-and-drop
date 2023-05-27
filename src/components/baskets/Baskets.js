@@ -1,19 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Basket from "./Basket";
 import "./baskets.css";
+import { Context } from "../../App";
 
-function Baskets({ keywords, removeSortedItem }) {
+function Baskets({ removeSortedItem }) {
   const [baskets, setBaskets] = useState([]);
   const [openedBasketName, setOpenedBasketName] = useState(null);
+  const data = useContext(Context);
 
   useEffect(() => {
     setBaskets(
-      keywords.reduce((baskets, keyword) => {
-        baskets.push({ name: keyword, items: [] });
-        return baskets;
-      }, [])
+      data
+        .reduce((keywords, item) => {
+          if (!keywords.includes(item.tag)) {
+            keywords.push(item.tag);
+          }
+          return keywords;
+        }, [])
+        .reduce((baskets, keyword) => {
+          baskets.push({ name: keyword, items: [] });
+          return baskets;
+        }, [])
     );
-  }, [keywords]);
+  }, [data]);
 
   const handleOpenBasket = (basketName) => {
     if (openedBasketName === basketName) {
