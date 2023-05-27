@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import "./App.css";
+import Baskets from "./components/baskets/Baskets";
 
 export const Context = createContext(null);
 
@@ -70,6 +71,7 @@ function App() {
           </div>
         </header>
         {data.length ? <div className="photos">{photos}</div> : <></>}
+        <Baskets keywords={keywords} />
       </Context.Provider>
     </div>
   );

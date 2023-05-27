@@ -1,0 +1,49 @@
+.baskets {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.basket_name {
+    padding: 20px 100px;
+    font-size: 20px;
+    background-color: lightskyblue;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.basket_name.open {
+    border: 2px solid rgb(55, 176, 251);
+}
+
+
+.opened_basket {
+    margin: 10px;
+    padding: 10px;
+    min-height: 100px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    border: 3px dotted lightskyblue;
+}
+
+.opened_basket button {
+    font-size: 30px;
+    border-bottom-left-radius: 6px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: lightskyblue;
+    border: none;
+    cursor: pointer;
+}
+
+.baskets {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+
+}
