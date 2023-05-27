@@ -12,7 +12,7 @@ function Basket({ basket, handleOpenBasket, addBasketItem, isOpen }) {
     e.preventDefault();
     const photoId = e.dataTransfer.getData("photoId");
     const item = data.find((obj) => obj.id === photoId);
-    if (item.tag === basket.name) {
+    if (item?.tag === basket.name) {
       addBasketItem(item);
       if (data.length - 1 === 0) {
         setAllSorted(true);

@@ -11,7 +11,8 @@ function App() {
   const [allSorted, setAllSorted] = useState(false);
   const [noResults, setNoResults] = useState(false);
 
-  const handleSearch = () => {
+  const handleSearch = (e) => {
+    e.preventDefault();
     const tags = inputValue
       .trim()
       .split(" ")
@@ -52,7 +53,12 @@ function App() {
   };
 
   const handleDragStart = (e, item) => {
+    e.target.classList.add("dragged");
     e.dataTransfer.setData("photoId", item.id);
+  };
+
+  const handleDragEnd = (e) => {
+    e.target.classList.remove("dragged");
   };
 
   const removeSortedItem = (sortedItemId) => {
@@ -67,13 +73,14 @@ function App() {
         src={item.url}
         alt={item.title}
         onDragStart={(e) => handleDragStart(e, item)}
+        onDragEnd={handleDragEnd}
       />
     );
   });
   return (
     <div className="App">
-      <Context.Provider value={{ data, setAllSorted }}>
-        <header>
+      <header>
+        <form onSubmit={handleSearch}>
           <h1>Search photos</h1>
           <div className="search">
             <input
@@ -81,26 +88,22 @@ function App() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
-            <button
-              disabled={inputValue.trim().length === 0}
-              onClick={handleSearch}
-            >
-              Search
-            </button>
+            <button disabled={inputValue.trim().length === 0}>Search</button>
           </div>
-        </header>
-        {allSorted ? (
-          <div className="message_container">
-            <div className="all_sorted">All photos are sorted!</div>
-          </div>
-        ) : (
-          <></>
-        )}
-        <div className="photos">
-          {photos}
-          {noResults && <div>No Results</div>}
+        </form>
+      </header>
+      {allSorted ? (
+        <div className="message_container">
+          <div className="all_sorted">All photos are sorted!</div>
         </div>
-
+      ) : (
+        <></>
+      )}
+      <div className="photos">
+        {photos}
+        {noResults && <div>No Results</div>}
+      </div>
+      <Context.Provider value={{ data, setAllSorted }}>
         <Baskets keywords={keywords} removeSortedItem={removeSortedItem} />
       </Context.Provider>
     </div>
