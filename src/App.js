@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import "./App.css";
 import Baskets from "./components/baskets/Baskets";
 
@@ -8,7 +8,21 @@ function App() {
   const [data, setData] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [keywords, setKeywords] = useState([]);
+  const [allSorted, setAllSorted] = useState(false);
 
+  const firstRenderRef = useRef(true);
+
+  useEffect(() => {
+    if (firstRenderRef.current) {
+      firstRenderRef.current = false;
+    } else {
+      if (!data.length) {
+        setAllSorted(true);
+      } else {
+        setAllSorted(false);
+      }
+    }
+  }, [data]);
 
   const handleSearch = () => {
     const tags = inputValue.trim().split(" ");
@@ -41,7 +55,13 @@ function App() {
       .catch((err) => console.log(err));
   };
 
-  
+  const handleDragStart = (e, item) => {
+    e.dataTransfer.setData("photoId", item.id);
+  };
+
+  const removeSortedItem = (sortedItemId) => {
+    setData(data.filter((item) => item.id !== sortedItemId));
+  };
 
   const photos = data.map((item) => {
     return (
@@ -50,6 +70,7 @@ function App() {
         key={item.id}
         src={item.url}
         alt={item.title}
+        onDragStart={(e) => handleDragStart(e, item)}
       />
     );
   });
@@ -70,8 +91,13 @@ function App() {
             </button>
           </div>
         </header>
+        {allSorted && (
+          <div className="message_container">
+            <div className="all_sorted">All photos are sorted!</div>
+          </div>
+        )}
         {data.length ? <div className="photos">{photos}</div> : <></>}
-        <Baskets keywords={keywords} />
+        <Baskets removeSortedItem={removeSortedItem} keywords={keywords} />
       </Context.Provider>
     </div>
   );

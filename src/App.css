@@ -56,3 +56,20 @@ header {
 .photo {
   cursor: grab
 }
+
+.all_sorted {
+  padding: 0 20px;
+  width: fit-content;
+  font-size: 25px;
+  text-align: center;
+
+}
+
+.message_container {
+  margin: 20px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  background-color: rgb(214, 235, 248);
+  border-radius: 50px;
+}

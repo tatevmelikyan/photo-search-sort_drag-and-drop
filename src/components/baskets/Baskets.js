@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Basket from "./Basket";
 import "./baskets.css";
 
-function Baskets({ keywords }) {
+function Baskets({ keywords, removeSortedItem }) {
   const [baskets, setBaskets] = useState([]);
   const [openedBasketName, setOpenedBasketName] = useState(null);
 
@@ -23,6 +23,18 @@ function Baskets({ keywords }) {
     }
   };
 
+  const addBasketItem = (item) => {
+    setBaskets(
+      baskets.map((basket) => {
+        if (basket.name === item.tag) {
+          basket.items = [...basket.items, item];
+          removeSortedItem(item.id);
+        }
+        return basket;
+      })
+    );
+  };
+
   return baskets.length ? (
     <div className="baskets_container">
       <div className="baskets">
@@ -30,6 +42,7 @@ function Baskets({ keywords }) {
           <Basket
             key={basket.name}
             isOpen={openedBasketName === basket.name}
+            addBasketItem={addBasketItem}
             basket={basket}
             handleOpenBasket={handleOpenBasket}
           />

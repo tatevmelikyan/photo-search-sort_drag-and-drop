@@ -17,6 +17,9 @@
     border: 2px solid rgb(55, 176, 251);
 }
 
+.basket_name.drag_enter {
+    background-color: rgb(55, 176, 251);
+}
 
 .opened_basket {
     margin: 10px;
