@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Context } from "../../App";
 
 function Basket({ basket, handleOpenBasket, addBasketItem, isOpen }) {
-  const data = useContext(Context);
+  const { data, setAllSorted } = useContext(Context);
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -14,6 +14,9 @@ function Basket({ basket, handleOpenBasket, addBasketItem, isOpen }) {
     const item = data.find((obj) => obj.id === photoId);
     if (item.tag === basket.name) {
       addBasketItem(item);
+      if (data.length - 1 === 0) {
+        setAllSorted(true);
+      }
     }
     e.target.classList.remove("drag_enter");
   };

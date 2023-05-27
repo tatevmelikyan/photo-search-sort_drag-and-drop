@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useState } from "react";
 import "./App.css";
 import Baskets from "./components/baskets/Baskets";
 
@@ -7,29 +7,21 @@ export const Context = createContext(null);
 function App() {
   const [data, setData] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const [keywords, setKeywords] = useState([]);
   const [allSorted, setAllSorted] = useState(false);
-
-  const firstRenderRef = useRef(true);
-
-  useEffect(() => {
-    if (firstRenderRef.current) {
-      firstRenderRef.current = false;
-    } else {
-      if (!data.length) {
-        setAllSorted(true);
-      } else {
-        setAllSorted(false);
-      }
-    }
-  }, [data]);
+  const [noResults, setNoResults] = useState(false);
 
   const handleSearch = () => {
-    const tags = inputValue.trim().split(" ").filter(tag => tag.trim().length > 0);
+    const tags = inputValue
+      .trim()
+      .split(" ")
+      .filter((tag) => tag.trim().length > 0);
+    setKeywords(tags);
     const dataAcc = [];
     Promise.all(
       tags.map((tag) => {
         return fetch(
-          `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=432038f9a2f76cf4ff57cc1e679c08c6&tags=${tag}&per_page=5&page=1&format=json&nojsoncallback=1`
+          `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=432038f9a2f76cf4ff57cc1e679c08c6&tags=${tag}&per_page=5&page=1&license=10&format=json&nojsoncallback=1`
         );
       })
     )
@@ -48,7 +40,13 @@ function App() {
           });
           dataAcc.push(...photos);
         });
+        if (dataAcc.length) {
+          setNoResults(false);
+        } else {
+          setNoResults(true);
+        }
         setData(dataAcc.sort((a, b) => 0.5 - Math.random()));
+        setAllSorted(false);
       })
       .catch((err) => console.log(err));
   };
@@ -72,10 +70,9 @@ function App() {
       />
     );
   });
-
   return (
     <div className="App">
-      <Context.Provider value={data}>
+      <Context.Provider value={{ data, setAllSorted }}>
         <header>
           <h1>Search photos</h1>
           <div className="search">
@@ -84,18 +81,27 @@ function App() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
-            <button disabled={inputValue.trim().length === 0} onClick={handleSearch}>
+            <button
+              disabled={inputValue.trim().length === 0}
+              onClick={handleSearch}
+            >
               Search
             </button>
           </div>
         </header>
-        { allSorted ? (
+        {allSorted ? (
           <div className="message_container">
             <div className="all_sorted">All photos are sorted!</div>
           </div>
-        ) : <></>}
-        {data.length ? <div className="photos">{photos}</div> : <></>}
-        <Baskets removeSortedItem={removeSortedItem} />
+        ) : (
+          <></>
+        )}
+        <div className="photos">
+          {photos}
+          {noResults && <div>No Results</div>}
+        </div>
+
+        <Baskets keywords={keywords} removeSortedItem={removeSortedItem} />
       </Context.Provider>
     </div>
   );

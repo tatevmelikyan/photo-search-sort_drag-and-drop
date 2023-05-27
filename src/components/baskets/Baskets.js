@@ -1,28 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Basket from "./Basket";
 import "./baskets.css";
-import { Context } from "../../App";
 
-function Baskets({ removeSortedItem }) {
+function Baskets({ keywords, removeSortedItem }) {
   const [baskets, setBaskets] = useState([]);
   const [openedBasketName, setOpenedBasketName] = useState(null);
-  const data = useContext(Context);
 
   useEffect(() => {
     setBaskets(
-      data
-        .reduce((keywords, item) => {
-          if (!keywords.includes(item.tag)) {
-            keywords.push(item.tag);
-          }
-          return keywords;
-        }, [])
-        .reduce((baskets, keyword) => {
-          baskets.push({ name: keyword, items: [] });
-          return baskets;
-        }, [])
+      keywords.reduce((baskets, keyword) => {
+        baskets.push({ name: keyword, items: [] });
+        return baskets;
+      }, [])
     );
-  }, [data]);
+  }, [keywords]);
 
   const handleOpenBasket = (basketName) => {
     if (openedBasketName === basketName) {
@@ -61,7 +52,7 @@ function Baskets({ removeSortedItem }) {
         <div className="opened_basket">
           {baskets
             .find((basket) => basket.name === openedBasketName)
-            .items.map((item) => (
+            ?.items.map((item) => (
               <img key={item.id} src={item.url} alt={item.title} />
             ))}
           <button onClick={() => setOpenedBasketName(null)}>×</button>
