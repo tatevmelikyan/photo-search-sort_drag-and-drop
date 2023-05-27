@@ -25,7 +25,7 @@ function App() {
   }, [data]);
 
   const handleSearch = () => {
-    const tags = inputValue.trim().split(" ");
+    const tags = inputValue.trim().split(" ").filter(tag => tag.trim().length > 0);
     setKeywords(tags);
     const dataAcc = [];
     Promise.all(
